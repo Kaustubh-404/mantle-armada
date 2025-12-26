@@ -11,13 +11,13 @@ const Arcadepix = localFont({ src: './fonts/Arcadepix.woff', display: 'swap', we
 
 
 export const metadata: Metadata = {
-  title: "Mantle Armada",
-  description: "A Fully On-Chain Naval Strategy Game on Mantle Network",
-  keywords: "blockchain game, NFT, pirates, navigation, Mantle, MNT, Web3, RWA",
-  authors: [{ name: "Mantle Armada Team" }],
+  title: "Seven Seas Protocol",
+  description: "Conquer the Seven Seas on Mantle Network - A Fully On-Chain Naval Strategy Game",
+  keywords: "blockchain game, NFT, pirates, naval strategy, Mantle, MNT, Web3, RWA, GameFi",
+  authors: [{ name: "Seven Seas Protocol Team" }],
   openGraph: {
-    title: "Mantle Armada",
-    description: "A Fully On-Chain Naval Strategy Game on Mantle Network",
+    title: "Seven Seas Protocol",
+    description: "Conquer the Seven Seas on Mantle Network - A Fully On-Chain Naval Strategy Game",
     type: "website",
   },
 };

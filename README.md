@@ -1,11 +1,11 @@
 <div align="center">
-  <img src="./public/logo_high.png" alt="Mantle Armada Logo" width="300" height="300">
+  <img src="./public/logo_high.png" alt="Seven Seas Protocol Logo" width="300" height="300">
 
-  # 🏴‍☠️ Mantle Armada
+  # 🏴‍☠️ Seven Seas Protocol
 
-  **A Fully On-Chain Naval Strategy Game Built for Mantle Network**
+  **Conquer the Seven Seas on Mantle Network**
 
-  *Command your ship, explore the seas, engage in epic battles, form guilds, mint yield-bearing NFTs, and rise through the ranks in this immersive blockchain-powered maritime adventure!*
+  *A fully on-chain naval strategy game where you command your ship, explore vast oceans, engage in epic battles, form powerful guilds, mint yield-bearing NFTs, and rise through the ranks in this immersive blockchain-powered maritime adventure!*
 
   [![Mantle Network](https://img.shields.io/badge/Mantle-Network-blue)](https://www.mantle.xyz/)
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -17,7 +17,7 @@
 
 ## 🌊 Overview
 
-**Mantle Armada** is a fully on-chain naval strategy game that demonstrates Mantle Network's capabilities for high-performance GameFi applications. Players become naval commanders, choosing between the disciplined Navy or rebellious Pirates, while engaging in strategic gameplay powered entirely by smart contracts on Mantle Sepolia.
+**Seven Seas Protocol** is a fully on-chain naval strategy game that demonstrates Mantle Network's capabilities for high-performance GameFi applications. Players become naval commanders, choosing between the disciplined Navy or rebellious Pirates, while engaging in strategic gameplay powered entirely by smart contracts on Mantle Sepolia.
 
 ### 🎯 Mantle Hackathon Alignment
 
@@ -438,11 +438,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🔗 Links
 
-- **Live Demo**: [mantle-armada.vercel.app](https://mantle-armada.vercel.app) *(replace with actual)*
+- **Live Demo**: [seven-seas-protocol.vercel.app](https://seven-seas-protocol.vercel.app) *(replace with actual)*
 - **Contracts**: [Mantle Sepolia Explorer](https://sepolia.mantlescan.xyz)
 - **Documentation**: [GitHub Wiki](https://github.com/Kaustubh-404/hackathon-game-AVAX/wiki)
 - **Discord**: [Join Community](https://discord.gg/...) *(replace with actual)*
-- **Twitter**: [@MantleArmada](https://twitter.com/...) *(replace with actual)*
+- **Twitter**: [@SevenSeasProto](https://twitter.com/...) *(replace with actual)*
 
 ---
 
@@ -456,9 +456,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 <div align="center">
-  <h3>⚓ Set sail and conquer the Mantle Armada! ⚓</h3>
+  <h3>⚓ Set sail and conquer the Seven Seas! ⚓</h3>
   <p><em>Built for Mantle Global Hackathon 2025</em></p>
-  <p><em>May the winds of Mantle be at your back and your cannons ever true.</em></p>
+  <p><em>Seven Seas Protocol - Where blockchain meets the high seas.</em></p>
 
   <br/>
 
