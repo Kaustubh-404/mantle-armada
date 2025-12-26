@@ -1,4 +1,4 @@
-# 🏗️ Mantle Armada: System Architecture
+# 🏗️ Seven Seas Protocol: System Architecture
 
 ## 📐 Contract Architecture Diagram
 

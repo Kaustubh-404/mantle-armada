@@ -5,7 +5,7 @@ export const Logo = ({className}: {className?: string}) => {
             <Image
           unoptimized
           src="/logo.png"
-          alt="Mantle Armada"
+          alt="Seven Seas Protocol"
           width={256}
           height={256}
           className={`${className}` }

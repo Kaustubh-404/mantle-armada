@@ -334,7 +334,7 @@ export function AccountCreationModal({ isOpen, onClose, onAccountCreated }: Acco
         <div className="mb-6">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500 mx-auto mb-4"></div>
           <p className="text-gray-300 mb-2">
-            Setting sail for the Mantle Armada...
+            Setting sail for the Seven Seas Protocol...
           </p>
           <p className="text-sm text-gray-400 mb-1">
             Your ship "{shipName}" is being prepared for {selectedFaction === 'pirate' ? 'piracy' : 'naval service'}

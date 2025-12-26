@@ -184,7 +184,7 @@ export const WelcomeScreen = () => {
   const renderContent = () => {
     if (!isConnected) {
       return {
-        title: "Welcome to Mantle Armada",
+        title: "Welcome to Seven Seas Protocol",
         subtitle: "Connect your wallet to start your maritime adventure on Mantle Network!",
         showLoginButton: true, // Show connect wallet button
         showCreateButton: false,
@@ -194,7 +194,7 @@ export const WelcomeScreen = () => {
 
     if (playerLoading && isConnected) {
       return {
-        title: "Welcome to Mantle Armada",
+        title: "Welcome to Seven Seas Protocol",
         subtitle: isRecheckingAccount ? "Account created! Verifying on blockchain..." : "Checking your account...",
         showLoginButton: false,
         showCreateButton: false,
@@ -204,7 +204,7 @@ export const WelcomeScreen = () => {
 
     if (hasAccount === false) {
       return {
-        title: "Welcome to Mantle Armada",
+        title: "Welcome to Seven Seas Protocol",
         subtitle: "A game about exploring, fighting, and upgrading your ship to become the most powerful authority in the seas. Are you ready to set sail, captain?",
         showLoginButton: true,
         showCreateButton: true,
@@ -272,9 +272,9 @@ export const WelcomeScreen = () => {
                       chain={activeChain}
                       connectModal={{
                         size: "wide",
-                        title: "Connect to Mantle Armada",
+                        title: "Connect to Seven Seas Protocol",
                         welcomeScreen: {
-                          title: "Welcome to Mantle Armada",
+                          title: "Welcome to Seven Seas Protocol",
                           subtitle: "Connect your wallet to start your maritime adventure on Mantle",
                           img: {
                             src: "/logo.png",

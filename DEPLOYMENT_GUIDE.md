@@ -1,4 +1,4 @@
-# 🚀 Mantle Armada: Deployment Guide
+# 🚀 Seven Seas Protocol: Deployment Guide
 
 ## ✅ Prerequisites Completed
 
@@ -78,7 +78,7 @@ npx hardhat run scripts/deploy-mantle-full.js --network mantleTestnet
 
 **Expected output:**
 ```
-🚀 Starting Mantle Armada Complete Deployment...
+🚀 Starting Seven Seas Protocol Complete Deployment...
 
 Deploying contracts with account: 0x...
 Account balance: 1.0 MNT
@@ -130,7 +130,7 @@ npx hardhat run scripts/test-deployment.js --network mantleTestnet
 
 **Expected output:**
 ```
-🧪 Testing Mantle Armada Deployment...
+🧪 Testing Seven Seas Protocol Deployment...
 
 TEST 1: Token Configuration
 ✅ Token Name: Armada Token

@@ -4,7 +4,7 @@ import { useActiveAccount, useActiveWallet, useWalletBalance } from "thirdweb/re
 import { client, mantleMainnet, mantleTestnet, getActiveChain } from "../providers/thirdweb-provider";
 
 /**
- * Custom hook to simplify Thirdweb usage in the Mantle Armada app
+ * Custom hook to simplify Thirdweb usage in the Seven Seas Protocol app
  * Provides wallet connection state, balance, and network information
  */
 export function useThirdweb() {

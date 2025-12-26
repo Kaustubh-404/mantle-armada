@@ -1,4 +1,4 @@
-# 🎮 Mantle Armada: New Features Guide
+# 🎮 Seven Seas Protocol: New Features Guide
 
 ## 🆕 **What's New on Mantle Network**
 
