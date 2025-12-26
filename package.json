@@ -36,7 +36,7 @@
     "@typechain/ethers-v6": "^0.5.1",
     "dotenv": "^16.5.0",
     "framer-motion": "^12.18.1",
-    "next": "15.3.2",
+    "next": "16.1.1",
     "pixi.js": "^8.10.2",
     "react": "^19.0.0",
     "react-confetti-explosion": "^3.0.2",
