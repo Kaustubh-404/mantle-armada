@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useActiveAccount, useReadContract, useSendTransaction } from 'thirdweb/react';
 import { getContract, prepareContractCall } from 'thirdweb';
 import { client, getActiveChain } from '../providers/thirdweb-provider';
@@ -99,9 +99,10 @@ export function usePlayerGuild() {
     params: account?.address ? [account.address] : undefined,
   });
 
+  // Use public mapping directly instead of getGuild
   const { data: guildData, isLoading: loadingGuildData, refetch: refetchGuildData } = useReadContract({
     contract: guildContract,
-    method: 'function getGuild(uint256) view returns (tuple(string name, address leader, uint256 createdAt, uint256 memberCount, uint256 treasury, bool isActive, uint256 totalBattlesWon, string logo, uint256 level))',
+    method: 'function guilds(uint256) view returns (string name, address leader, uint256 createdAt, uint256 memberCount, uint256 treasury, bool isActive, uint256 totalBattlesWon, string logo, uint256 level)',
     params: guildId && guildId > 0n ? [guildId] : undefined,
   });
 
@@ -122,9 +123,17 @@ export function usePlayerBattlePass() {
   const account = useActiveAccount();
   const { battlePassContract } = useContractInstances();
 
-  const { data: passData, isLoading, refetch } = useReadContract({
+  // Try using the public mapping directly instead of getPlayerPass
+  const { data: passData, isLoading, refetch: refetchPass } = useReadContract({
     contract: battlePassContract,
-    method: 'function getPlayerPass(address) view returns (tuple(uint256 season, uint256 level, uint256 experience, bool isPremium, uint256 lastRewardClaimed, uint256 createdAt))',
+    method: 'function playerPasses(address) view returns (uint256 season, uint256 level, uint256 experience, bool isPremium, uint256 lastRewardClaimed, uint256 createdAt)',
+    params: account?.address ? [account.address] : undefined,
+  });
+
+  // Use simpler hasActivePass function as fallback
+  const { data: hasPass, refetch: refetchHasPass } = useReadContract({
+    contract: battlePassContract,
+    method: 'function hasActivePass(address) view returns (bool)',
     params: account?.address ? [account.address] : undefined,
   });
 
@@ -134,12 +143,28 @@ export function usePlayerBattlePass() {
     params: [],
   });
 
+  // Debug logging
+  useEffect(() => {
+    if (account?.address) {
+      console.log('Battle Pass Hook Debug:', {
+        address: account.address,
+        passData: passData,
+        passDataType: typeof passData,
+        hasPass: hasPass,
+        hasPassFromData: passData ? passData[0] > 0n : false,
+      });
+    }
+  }, [account?.address, passData, hasPass]);
+
   return {
     passData,
     seasonInfo,
     isLoading,
-    refetch,
-    hasActivePass: passData ? passData[0] > 0n : false,
+    refetch: () => {
+      refetchPass();
+      refetchHasPass();
+    },
+    hasActivePass: hasPass === true || (passData ? passData[0] > 0n : false),
   };
 }
 

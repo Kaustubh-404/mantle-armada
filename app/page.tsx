@@ -28,9 +28,9 @@ export default function Home() {
       <RankingSection />
       <WelcomeScreen />
 
-      {/* New Mantle Ecosystem Features Dashboard */}
+      {/* New Mantle Ecosystem Features Dashboard - Minimized Version */}
       {showDashboard && (
-        <div className="fixed top-[20px] right-[20px] z-20 max-w-md">
+        <div className="fixed bottom-[380px] right-[20px] z-10 max-w-[280px]">
           <EcosystemDashboard />
         </div>
       )}

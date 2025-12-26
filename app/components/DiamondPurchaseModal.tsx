@@ -58,7 +58,7 @@ export const DiamondPurchaseModal = ({ isOpen, onClose }: DiamondPurchaseModalPr
       
       setNotification(`✅ ${packageInfo.name} Diamond Package purchased! +${packageInfo.diamonds} 💎`);
       
-      console.log(`Diamond package purchased: ${packageType}, Cost: ${packageInfo.cost} AVAX, Diamonds: ${packageInfo.diamonds}`);
+      console.log(`Diamond package purchased: ${packageType}, Cost: ${packageInfo.cost} MNT, Diamonds: ${packageInfo.diamonds}`);
       
       // Close modal after successful purchase
       setTimeout(() => {
@@ -69,7 +69,7 @@ export const DiamondPurchaseModal = ({ isOpen, onClose }: DiamondPurchaseModalPr
       console.error("Error purchasing diamonds:", error);
       
       if (error.message?.includes("insufficient funds")) {
-        setNotification("❌ Insufficient AVAX balance");
+        setNotification("❌ Insufficient MNT balance");
       } else if (error.message?.includes("user rejected")) {
         setNotification("❌ Transaction cancelled");
       } else {
@@ -81,7 +81,7 @@ export const DiamondPurchaseModal = ({ isOpen, onClose }: DiamondPurchaseModalPr
   };
 
   const getValuePercentage = (packageType: 'small' | 'medium' | 'large') => {
-    const baseRatio = 10; // 10 AVAX per diamond for small package
+    const baseRatio = 10; // 10 MNT per diamond for small package
     const pkg = diamondPackages.find((p: DiamondPackage) => p.name.toLowerCase() === packageType);
     if (!pkg) return 0;
     
@@ -159,9 +159,9 @@ export const DiamondPurchaseModal = ({ isOpen, onClose }: DiamondPurchaseModalPr
 
                 <div className="flex flex-col min-w-[200px] items-center gap-3">
                   <div className="text-right">
-                    <div className="text-white font-bold">{pkg.cost} AVAX</div>
+                    <div className="text-white font-bold">{pkg.cost} MNT</div>
                     <div className="text-gray-400 text-xs">
-                      {(pkg.cost / pkg.diamonds).toFixed(1)} AVAX per diamond
+                      {(pkg.cost / pkg.diamonds).toFixed(1)} MNT per diamond
                     </div>
                   </div>
                   
@@ -180,7 +180,7 @@ export const DiamondPurchaseModal = ({ isOpen, onClose }: DiamondPurchaseModalPr
 
         <div className="text-center text-xs text-gray-400 max-w-sm">
           <p>
-            💡 Diamonds are purchased with AVAX (Avax). Make sure you have sufficient AVAX balance in your wallet.
+            💡 Diamonds are purchased with MNT (Mantle). Make sure you have sufficient MNT balance in your wallet.
           </p>
         </div>
 

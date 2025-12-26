@@ -42,8 +42,6 @@ export type { ArmadaGuild } from "./artifacts/contracts/ArmadaGuild";
 export { ArmadaGuild__factory } from "./factories/artifacts/contracts/ArmadaGuild__factory";
 export type { ArmadaToken } from "./artifacts/contracts/ArmadaToken";
 export { ArmadaToken__factory } from "./factories/artifacts/contracts/ArmadaToken__factory";
-export type { SeasOfLinkardia } from "./artifacts/contracts/AvaxArmada.sol/SeasOfLinkardia";
-export { SeasOfLinkardia__factory } from "./factories/artifacts/contracts/AvaxArmada.sol/SeasOfLinkardia__factory";
 export type { BattlePass } from "./artifacts/contracts/BattlePass.sol/BattlePass";
 export { BattlePass__factory } from "./factories/artifacts/contracts/BattlePass.sol/BattlePass__factory";
 export type { IArmadaToken } from "./artifacts/contracts/BattlePass.sol/IArmadaToken";

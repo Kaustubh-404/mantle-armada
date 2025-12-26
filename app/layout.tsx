@@ -11,13 +11,13 @@ const Arcadepix = localFont({ src: './fonts/Arcadepix.woff', display: 'swap', we
 
 
 export const metadata: Metadata = {
-  title: "AVAX Armada",
-  description: "AVAX Armada",
-  keywords: "blockchain game, NFT, pirates, navigation, Avalanche, Avax, Web3",
-  authors: [{ name: "AVAX Armada Team" }],
+  title: "Mantle Armada",
+  description: "A Fully On-Chain Naval Strategy Game on Mantle Network",
+  keywords: "blockchain game, NFT, pirates, navigation, Mantle, MNT, Web3, RWA",
+  authors: [{ name: "Mantle Armada Team" }],
   openGraph: {
-    title: "AVAX Armada",
-    description: "AVAX Armada",
+    title: "Mantle Armada",
+    description: "A Fully On-Chain Naval Strategy Game on Mantle Network",
     type: "website",
   },
 };

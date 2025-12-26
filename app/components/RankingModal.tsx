@@ -283,9 +283,9 @@ export function RankingModal({ isOpen, onClose }: RankingModalProps) {
         <div className="mt-6 ui1 p-6">
           <div className="text-white font-bold text-sm mb-2">💎 Diamond Purchase Rewards</div>
           <div className="text-gray-300 text-xs space-y-1">
-            <div>🥇 Rank #1: 4 AVAX per diamond purchase</div>
-            <div>🥈 Rank #2: 2 AVAX per diamond purchase</div>
-            <div>🥉 Rank #3: 1 AVAX per diamond purchase</div>
+            <div>🥇 Rank #1: 4 MNT per diamond purchase</div>
+            <div>🥈 Rank #2: 2 MNT per diamond purchase</div>
+            <div>🥉 Rank #3: 1 MNT per diamond purchase</div>
           </div>
         </div>
 

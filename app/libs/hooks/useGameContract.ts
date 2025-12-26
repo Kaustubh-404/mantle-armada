@@ -123,7 +123,7 @@ export function useGameContract() {
       contract,
       method: "function travel(uint256 toLocation, bool fast) payable",
       params: [BigInt(toLocation), useFastTravel],
-      value: BigInt(0), // AVAX value if needed for fast travel
+      value: BigInt(0), // MNT value if needed for fast travel
     });
     return await sendTransaction({ transaction, account });
   };
