@@ -31,9 +31,9 @@ export const Header = () => {
           chain={activeChain}
           connectModal={{
             size: "wide",
-            title: "Connect to Mantle Armada",
+            title: "Connect to Seven Seas Protocol",
             welcomeScreen: {
-              title: "Welcome to Mantle Armada",
+              title: "Welcome to Seven Seas Protocol",
               subtitle: "Connect your wallet to start your maritime adventure on Mantle",
               img: {
                 src: "/logo.png",
