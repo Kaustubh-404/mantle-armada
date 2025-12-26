@@ -42,7 +42,7 @@ This project showcases Mantle's strengths for the **Mantle Global Hackathon 2025
 - **🔧 Repair System**: Multiple repair options (free, gold, diamond)
 - **🏆 Ranking System**: Global leaderboard with rewards
 
-### 🆕 Advanced Features (New!)
+### 🆕 Advanced Features
 
 #### ⚓ **Guilds System**
 - **Create & Join Guilds**: Form alliances with fellow pirates/navy
