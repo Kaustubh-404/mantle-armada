@@ -72,6 +72,15 @@ This project showcases Mantle's strengths for the **Mantle Global Hackathon 2025
 - **Staking Rewards**: Stake Ship NFTs for enhanced yield
 - **Premium Features**: Upgrade Battle Pass, future governance
 
+#### 🎁 **Referral System**
+- **Viral Growth Mechanics**: Invite friends and earn rewards
+- **Auto-Generated Codes**: Each player gets unique code (e.g., REF_A3F2B1)
+- **Two-Way Rewards**: Both referrer and new player benefit
+- **Referrer Rewards**: +50 ARMADA + 1 Diamond per successful referral
+- **New Player Bonus**: +100 ARMADA + 200 Gold + 1 Diamond
+- **Social Sharing**: Easy sharing via Twitter, Telegram, and direct links
+- **On-Chain Tracking**: All referrals tracked transparently on blockchain
+
 ---
 
 ## 🛠️ Technology Stack

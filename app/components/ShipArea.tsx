@@ -271,7 +271,26 @@ export const ShipArea = () => {
       
     } catch (error) {
       console.error("Attack error:", error);
-      setNotification(`⚠️ Attack failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+
+      // Parse common game rule errors for user-friendly messages
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      let friendlyMessage = '';
+
+      if (errorMessage.includes('Same affiliation')) {
+        friendlyMessage = '🚫 Cannot attack ships from your own faction! Attack the opposite faction instead.';
+      } else if (errorMessage.includes('One ship is wrecked')) {
+        friendlyMessage = '🚫 Cannot attack - one of the ships is wrecked!';
+      } else if (errorMessage.includes('Cannot attack at ports')) {
+        friendlyMessage = '🚫 Cannot attack at ports - ports are safe zones!';
+      } else if (errorMessage.includes('Must be same location')) {
+        friendlyMessage = '🚫 Ships must be at the same location to battle!';
+      } else if (errorMessage.includes('In travel')) {
+        friendlyMessage = '🚫 Cannot attack while ships are traveling!';
+      } else {
+        friendlyMessage = `⚠️ Attack failed: ${errorMessage}`;
+      }
+
+      setNotification(friendlyMessage);
     } finally {
       setIsAttacking(false);
     }

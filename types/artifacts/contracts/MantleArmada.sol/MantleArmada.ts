@@ -37,10 +37,13 @@ export interface MantleArmadaInterface extends Interface {
       | "claimGPM"
       | "completeRepair"
       | "createAccount"
+      | "createAccountWithReferral"
       | "getClaimableGold"
       | "getHireCrewCost"
       | "getPlayerBattlePower"
+      | "getPlayerReferralCode"
       | "getRanking"
+      | "getReferralStats"
       | "getRepairOptions"
       | "getShipsAt"
       | "getTimeUntilNextGPM"
@@ -49,10 +52,14 @@ export interface MantleArmadaInterface extends Interface {
       | "hireCrew"
       | "isPort"
       | "isRepairReady"
+      | "isValidReferralCode"
       | "nextUpgradeId"
       | "owner"
+      | "playerReferralCode"
       | "players"
       | "purchaseCounts"
+      | "referralCodes"
+      | "referralData"
       | "renounceOwnership"
       | "repairShip"
       | "rescueMNT"
@@ -73,6 +80,8 @@ export interface MantleArmadaInterface extends Interface {
       | "GPMClaimed"
       | "GuildTreasuryUpdated"
       | "OwnershipTransferred"
+      | "ReferralCodeGenerated"
+      | "ReferralUsed"
       | "ShipAttacked"
       | "ShipRepaired"
       | "TravelStarted"
@@ -125,6 +134,10 @@ export interface MantleArmadaInterface extends Interface {
     values: [string, boolean, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "createAccountWithReferral",
+    values: [string, boolean, BigNumberish, string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getClaimableGold",
     values: [AddressLike]
   ): string;
@@ -137,8 +150,16 @@ export interface MantleArmadaInterface extends Interface {
     values: [AddressLike]
   ): string;
   encodeFunctionData(
+    functionFragment: "getPlayerReferralCode",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getRanking",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getReferralStats",
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "getRepairOptions",
@@ -170,10 +191,18 @@ export interface MantleArmadaInterface extends Interface {
     values: [AddressLike]
   ): string;
   encodeFunctionData(
+    functionFragment: "isValidReferralCode",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "nextUpgradeId",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "playerReferralCode",
+    values: [AddressLike]
+  ): string;
   encodeFunctionData(
     functionFragment: "players",
     values: [BigNumberish]
@@ -181,6 +210,14 @@ export interface MantleArmadaInterface extends Interface {
   encodeFunctionData(
     functionFragment: "purchaseCounts",
     values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "referralCodes",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "referralData",
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
@@ -239,6 +276,10 @@ export interface MantleArmadaInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "createAccountWithReferral",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getClaimableGold",
     data: BytesLike
   ): Result;
@@ -250,7 +291,15 @@ export interface MantleArmadaInterface extends Interface {
     functionFragment: "getPlayerBattlePower",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "getPlayerReferralCode",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getRanking", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getReferralStats",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "getRepairOptions",
     data: BytesLike
@@ -275,13 +324,29 @@ export interface MantleArmadaInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "isValidReferralCode",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "nextUpgradeId",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "playerReferralCode",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "players", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "purchaseCounts",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "referralCodes",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "referralData",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -433,6 +498,41 @@ export namespace OwnershipTransferredEvent {
   export interface OutputObject {
     previousOwner: string;
     newOwner: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace ReferralCodeGeneratedEvent {
+  export type InputTuple = [player: AddressLike, referralCode: string];
+  export type OutputTuple = [player: string, referralCode: string];
+  export interface OutputObject {
+    player: string;
+    referralCode: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace ReferralUsedEvent {
+  export type InputTuple = [
+    referrer: AddressLike,
+    referee: AddressLike,
+    referralCode: string
+  ];
+  export type OutputTuple = [
+    referrer: string,
+    referee: string,
+    referralCode: string
+  ];
+  export interface OutputObject {
+    referrer: string;
+    referee: string;
+    referralCode: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -670,6 +770,17 @@ export interface MantleArmada extends BaseContract {
     "nonpayable"
   >;
 
+  createAccountWithReferral: TypedContractMethod<
+    [
+      _boatName: string,
+      _isPirate: boolean,
+      _startLocation: BigNumberish,
+      _referralCode: string
+    ],
+    [void],
+    "nonpayable"
+  >;
+
   getClaimableGold: TypedContractMethod<
     [player: AddressLike],
     [bigint],
@@ -684,9 +795,28 @@ export interface MantleArmada extends BaseContract {
     "view"
   >;
 
+  getPlayerReferralCode: TypedContractMethod<
+    [player: AddressLike],
+    [string],
+    "view"
+  >;
+
   getRanking: TypedContractMethod<
     [n: BigNumberish],
     [[string[], bigint[]]],
+    "view"
+  >;
+
+  getReferralStats: TypedContractMethod<
+    [player: AddressLike],
+    [
+      [string, string, bigint, bigint] & {
+        referralCode: string;
+        referrer: string;
+        totalReferrals: bigint;
+        referralRewards: bigint;
+      }
+    ],
     "view"
   >;
 
@@ -727,15 +857,37 @@ export interface MantleArmada extends BaseContract {
 
   isRepairReady: TypedContractMethod<[player: AddressLike], [boolean], "view">;
 
+  isValidReferralCode: TypedContractMethod<[code: string], [boolean], "view">;
+
   nextUpgradeId: TypedContractMethod<[], [bigint], "view">;
 
   owner: TypedContractMethod<[], [string], "view">;
+
+  playerReferralCode: TypedContractMethod<
+    [arg0: AddressLike],
+    [string],
+    "view"
+  >;
 
   players: TypedContractMethod<[arg0: BigNumberish], [string], "view">;
 
   purchaseCounts: TypedContractMethod<
     [arg0: AddressLike, arg1: BigNumberish],
     [bigint],
+    "view"
+  >;
+
+  referralCodes: TypedContractMethod<[arg0: string], [string], "view">;
+
+  referralData: TypedContractMethod<
+    [arg0: AddressLike],
+    [
+      [string, bigint, bigint] & {
+        referrer: string;
+        totalReferrals: bigint;
+        referralRewards: bigint;
+      }
+    ],
     "view"
   >;
 
@@ -892,6 +1044,18 @@ export interface MantleArmada extends BaseContract {
     "nonpayable"
   >;
   getFunction(
+    nameOrSignature: "createAccountWithReferral"
+  ): TypedContractMethod<
+    [
+      _boatName: string,
+      _isPirate: boolean,
+      _startLocation: BigNumberish,
+      _referralCode: string
+    ],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
     nameOrSignature: "getClaimableGold"
   ): TypedContractMethod<[player: AddressLike], [bigint], "view">;
   getFunction(
@@ -901,8 +1065,25 @@ export interface MantleArmada extends BaseContract {
     nameOrSignature: "getPlayerBattlePower"
   ): TypedContractMethod<[player: AddressLike], [bigint], "view">;
   getFunction(
+    nameOrSignature: "getPlayerReferralCode"
+  ): TypedContractMethod<[player: AddressLike], [string], "view">;
+  getFunction(
     nameOrSignature: "getRanking"
   ): TypedContractMethod<[n: BigNumberish], [[string[], bigint[]]], "view">;
+  getFunction(
+    nameOrSignature: "getReferralStats"
+  ): TypedContractMethod<
+    [player: AddressLike],
+    [
+      [string, string, bigint, bigint] & {
+        referralCode: string;
+        referrer: string;
+        totalReferrals: bigint;
+        referralRewards: bigint;
+      }
+    ],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "getRepairOptions"
   ): TypedContractMethod<
@@ -945,11 +1126,17 @@ export interface MantleArmada extends BaseContract {
     nameOrSignature: "isRepairReady"
   ): TypedContractMethod<[player: AddressLike], [boolean], "view">;
   getFunction(
+    nameOrSignature: "isValidReferralCode"
+  ): TypedContractMethod<[code: string], [boolean], "view">;
+  getFunction(
     nameOrSignature: "nextUpgradeId"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "owner"
   ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "playerReferralCode"
+  ): TypedContractMethod<[arg0: AddressLike], [string], "view">;
   getFunction(
     nameOrSignature: "players"
   ): TypedContractMethod<[arg0: BigNumberish], [string], "view">;
@@ -958,6 +1145,22 @@ export interface MantleArmada extends BaseContract {
   ): TypedContractMethod<
     [arg0: AddressLike, arg1: BigNumberish],
     [bigint],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "referralCodes"
+  ): TypedContractMethod<[arg0: string], [string], "view">;
+  getFunction(
+    nameOrSignature: "referralData"
+  ): TypedContractMethod<
+    [arg0: AddressLike],
+    [
+      [string, bigint, bigint] & {
+        referrer: string;
+        totalReferrals: bigint;
+        referralRewards: bigint;
+      }
+    ],
     "view"
   >;
   getFunction(
@@ -1068,6 +1271,20 @@ export interface MantleArmada extends BaseContract {
     OwnershipTransferredEvent.InputTuple,
     OwnershipTransferredEvent.OutputTuple,
     OwnershipTransferredEvent.OutputObject
+  >;
+  getEvent(
+    key: "ReferralCodeGenerated"
+  ): TypedContractEvent<
+    ReferralCodeGeneratedEvent.InputTuple,
+    ReferralCodeGeneratedEvent.OutputTuple,
+    ReferralCodeGeneratedEvent.OutputObject
+  >;
+  getEvent(
+    key: "ReferralUsed"
+  ): TypedContractEvent<
+    ReferralUsedEvent.InputTuple,
+    ReferralUsedEvent.OutputTuple,
+    ReferralUsedEvent.OutputObject
   >;
   getEvent(
     key: "ShipAttacked"
@@ -1192,6 +1409,28 @@ export interface MantleArmada extends BaseContract {
       OwnershipTransferredEvent.InputTuple,
       OwnershipTransferredEvent.OutputTuple,
       OwnershipTransferredEvent.OutputObject
+    >;
+
+    "ReferralCodeGenerated(address,string)": TypedContractEvent<
+      ReferralCodeGeneratedEvent.InputTuple,
+      ReferralCodeGeneratedEvent.OutputTuple,
+      ReferralCodeGeneratedEvent.OutputObject
+    >;
+    ReferralCodeGenerated: TypedContractEvent<
+      ReferralCodeGeneratedEvent.InputTuple,
+      ReferralCodeGeneratedEvent.OutputTuple,
+      ReferralCodeGeneratedEvent.OutputObject
+    >;
+
+    "ReferralUsed(address,address,string)": TypedContractEvent<
+      ReferralUsedEvent.InputTuple,
+      ReferralUsedEvent.OutputTuple,
+      ReferralUsedEvent.OutputObject
+    >;
+    ReferralUsed: TypedContractEvent<
+      ReferralUsedEvent.InputTuple,
+      ReferralUsedEvent.OutputTuple,
+      ReferralUsedEvent.OutputObject
     >;
 
     "ShipAttacked(address,address,bool)": TypedContractEvent<

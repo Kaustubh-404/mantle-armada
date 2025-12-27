@@ -20,6 +20,7 @@ export function AccountCreationModal({ isOpen, onClose, onAccountCreated }: Acco
   const [selectedFaction, setSelectedFaction] = useState<'pirate' | 'navy' | null>(null);
   const [shipName, setShipName] = useState('');
   const [selectedPort, setSelectedPort] = useState<25 | 55 | 89 | null>(null);
+  const [referralCode, setReferralCode] = useState('');
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState('');
   
@@ -31,6 +32,7 @@ export function AccountCreationModal({ isOpen, onClose, onAccountCreated }: Acco
     setSelectedFaction(null);
     setShipName('');
     setSelectedPort(null);
+    setReferralCode('');
     setIsCreating(false);
     setError('');
   };
@@ -66,23 +68,38 @@ export function AccountCreationModal({ isOpen, onClose, onAccountCreated }: Acco
 
   const createAccount = async (startPort: 25 | 55 | 89) => {
     if (!gameContract.isReady || !selectedFaction) return;
-    
+
     setIsCreating(true);
     try {
       const isPirate = selectedFaction === 'pirate';
-      
-      // Check if createAccount exists before calling it
-      if ('createAccount' in gameContract) {
-        await gameContract.createAccount(shipName.trim(), isPirate, startPort);
+
+      // Use referral code if provided, otherwise use standard creation
+      if (referralCode.trim().length > 0) {
+        // Create account with referral
+        if ('createAccountWithReferral' in gameContract) {
+          await gameContract.createAccountWithReferral(
+            shipName.trim(),
+            isPirate,
+            startPort,
+            referralCode.trim().toUpperCase() // Convert to uppercase to match contract format
+          );
+        } else {
+          throw new Error('Referral system not available');
+        }
       } else {
-        throw new Error('Contract not ready');
+        // Create account without referral (standard)
+        if ('createAccount' in gameContract) {
+          await gameContract.createAccount(shipName.trim(), isPirate, startPort);
+        } else {
+          throw new Error('Contract not ready');
+        }
       }
-      
+
       setCurrentStep('success');
-      
+
       // Force refresh player data immediately
       forceRefresh();
-      
+
       // Also trigger the parent callback
       onAccountCreated();
     } catch (error) {
@@ -184,19 +201,45 @@ export function AccountCreationModal({ isOpen, onClose, onAccountCreated }: Acco
         />
       </div>
 
-      <div className="mb-6">
-        <input
-          type="text"
-          value={shipName}
-          onChange={(e) => setShipName(e.target.value)}
-          placeholder="Enter ship name..."
-          maxLength={12}
-          className="ui5 w-full max-w-xs mx-auto p-4 rounded-md text-black placeholder-gray-400 focus:outline-none focus:border-blue-500"
-          autoFocus
-        />
-        <p className="text-sm text-gray-400 mt-2">
-          {shipName.length}/12 characters
-        </p>
+      <div className="mb-6 space-y-4">
+        <div>
+          <input
+            type="text"
+            value={shipName}
+            onChange={(e) => setShipName(e.target.value)}
+            placeholder="Enter ship name..."
+            maxLength={12}
+            className="ui5 w-full max-w-xs mx-auto p-4 rounded-md text-black placeholder-gray-400 focus:outline-none focus:border-blue-500"
+            autoFocus
+          />
+          <p className="text-sm text-gray-400 mt-2">
+            {shipName.length}/12 characters
+          </p>
+        </div>
+
+        {/* Referral Code Input - Optional */}
+        <div>
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <span className="text-sm text-gray-400">Have a referral code?</span>
+            <span className="text-xs text-blue-400">(Optional)</span>
+          </div>
+          <input
+            type="text"
+            value={referralCode}
+            onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
+            placeholder="REF_A3F2B1"
+            maxLength={10}
+            className="ui5 w-full max-w-xs mx-auto p-4 rounded-md text-black placeholder-gray-400 focus:outline-none focus:border-blue-500"
+          />
+          <p className="text-xs text-gray-400 mt-2">
+            {referralCode ? `Code: ${referralCode}` : 'Skip if you don\'t have one'}
+          </p>
+          {referralCode && (
+            <p className="text-xs text-green-400 mt-1">
+              ✨ You'll receive +100 ARMADA, +200 Gold, and +1 Diamond!
+            </p>
+          )}
+        </div>
       </div>
 
       {error && (

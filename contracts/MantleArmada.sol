@@ -66,6 +66,13 @@ contract MantleArmada is Ownable, ReentrancyGuard {
         uint256 repairEnd;
     }
 
+    // NEW: Referral System Structures
+    struct ReferralData {
+        address referrer;           // Who referred this player
+        uint256 totalReferrals;     // How many people this player has referred
+        uint256 referralRewards;    // Total rewards earned from referrals
+    }
+
     struct Upgrade {
         string name;
         uint256 cost;
@@ -84,6 +91,11 @@ contract MantleArmada is Ownable, ReentrancyGuard {
 
     address[] public players;
 
+    // NEW: Referral System Mappings
+    mapping(address => ReferralData) public referralData;
+    mapping(string => address) public referralCodes;      // "REF_A3F2B1" => player address
+    mapping(address => string) public playerReferralCode; // player address => "REF_A3F2B1"
+
     // UPDATED: Faster cycles for Mantle's high throughput
     uint256 constant GPM_CYCLE_SECONDS = 10; // 10 seconds (was 60 on AVAX)
     uint256 constant BASE_REPAIR_TIME = 5 hours;
@@ -96,6 +108,13 @@ contract MantleArmada is Ownable, ReentrancyGuard {
     // NEW: Rewards for ecosystem integration
     uint256 constant ARMADA_PER_BATTLE_WIN = 1 * 10**18; // 1 ARMADA per win
     uint256 constant ARMADA_PER_CHECKIN = 1 * 10**18; // 1 ARMADA per check-in
+
+    // NEW: Referral Rewards
+    uint256 constant REFERRER_ARMADA_REWARD = 50 * 10**18;  // 50 ARMADA for referrer
+    uint256 constant REFERRER_DIAMOND_REWARD = 1;           // 1 Diamond for referrer
+    uint256 constant REFEREE_ARMADA_REWARD = 100 * 10**18;  // 100 ARMADA for new player
+    uint256 constant REFEREE_GOLD_REWARD = 200;             // 200 Gold for new player
+    uint256 constant REFEREE_DIAMOND_REWARD = 1;            // 1 Diamond for new player
 
     event AccountCreated(address indexed user, string boatName, bool isPirate);
     event UpgradeAdded(uint256 indexed id, string name);
@@ -110,6 +129,8 @@ contract MantleArmada is Ownable, ReentrancyGuard {
     event ArmadaTokenMinted(address indexed user, uint256 amount, string reason);
     event BattlePassXPGained(address indexed user, uint256 xp, string action);
     event GuildTreasuryUpdated(address indexed member, uint256 amount);
+    event ReferralCodeGenerated(address indexed player, string referralCode);
+    event ReferralUsed(address indexed referrer, address indexed referee, string referralCode);
     
     enum RepairType { FREE, GOLD, DIAMOND }
 
@@ -155,16 +176,89 @@ contract MantleArmada is Ownable, ReentrancyGuard {
         }
     }
 
+    /**
+     * @dev Generate a unique referral code from player address
+     * Format: "REF_" + first 6 chars of address
+     */
+    function _generateReferralCode(address player) internal pure returns (string memory) {
+        bytes memory addressBytes = abi.encodePacked(player);
+        bytes memory result = new bytes(10); // "REF_" + 6 chars
+
+        result[0] = 'R';
+        result[1] = 'E';
+        result[2] = 'F';
+        result[3] = '_';
+
+        bytes memory hexChars = "0123456789ABCDEF";
+        for (uint i = 0; i < 6; i++) {
+            uint8 value = uint8(addressBytes[i]);
+            result[4 + i] = hexChars[value >> 4];
+        }
+
+        return string(result);
+    }
+
+    /**
+     * @dev Create account without referral (legacy function)
+     */
     function createAccount(string calldata _boatName, bool _isPirate, uint256 _startLocation) external {
+        _createAccountInternal(msg.sender, _boatName, _isPirate, _startLocation, "");
+    }
+
+    /**
+     * @dev NEW: Create account with optional referral code
+     */
+    function createAccountWithReferral(
+        string calldata _boatName,
+        bool _isPirate,
+        uint256 _startLocation,
+        string calldata _referralCode
+    ) external {
+        _createAccountInternal(msg.sender, _boatName, _isPirate, _startLocation, _referralCode);
+    }
+
+    /**
+     * @dev Internal function to create account with optional referral
+     */
+    function _createAccountInternal(
+        address player,
+        string calldata _boatName,
+        bool _isPirate,
+        uint256 _startLocation,
+        string memory _referralCode
+    ) internal {
         require(bytes(_boatName).length > 0 && bytes(_boatName).length <= 12, "Boat name invalid length");
         require(_startLocation <= 100, "Location must be 0-100");
-        require(accounts[msg.sender].hp == 0 && accounts[msg.sender].crew == 0, "Already has account");
-        
-        accounts[msg.sender] = Account({
+        require(accounts[player].hp == 0 && accounts[player].crew == 0, "Already has account");
+
+        // Process referral if code provided
+        address referrer = address(0);
+        if (bytes(_referralCode).length > 0) {
+            referrer = referralCodes[_referralCode];
+            require(referrer != address(0), "Invalid referral code");
+            require(referrer != player, "Cannot refer yourself");
+            require(accounts[referrer].hp > 0, "Referrer must have account");
+
+            // Track referral
+            referralData[player].referrer = referrer;
+            referralData[referrer].totalReferrals += 1;
+        }
+
+        // Create account with base stats
+        uint256 startingGold = 100;
+        uint256 startingDiamonds = 0;
+
+        // Add referee bonuses if referred
+        if (referrer != address(0)) {
+            startingGold += REFEREE_GOLD_REWARD;      // +200 gold
+            startingDiamonds += REFEREE_DIAMOND_REWARD; // +1 diamond
+        }
+
+        accounts[player] = Account({
             boatName: _boatName,
             isPirate: _isPirate,
-            gold: 100,
-            diamonds: 0,
+            gold: startingGold,
+            diamonds: startingDiamonds,
             hp: 100,
             maxHp: 100,
             speed: 1,
@@ -181,14 +275,43 @@ contract MantleArmada is Ownable, ReentrancyGuard {
             lastGPMClaim: block.timestamp,
             repairEnd: 0
         });
-        
-        players.push(msg.sender);
-        emit AccountCreated(msg.sender, _boatName, _isPirate);
-        
-        // NEW: Give starting XP in battle pass
+
+        players.push(player);
+
+        // Auto-generate and register referral code for new player
+        string memory newPlayerCode = _generateReferralCode(player);
+        referralCodes[newPlayerCode] = player;
+        playerReferralCode[player] = newPlayerCode;
+        emit ReferralCodeGenerated(player, newPlayerCode);
+
+        emit AccountCreated(player, _boatName, _isPirate);
+
+        // Distribute referral rewards
+        if (referrer != address(0)) {
+            // Reward referee (new player) with ARMADA
+            if (address(armadaToken) != address(0)) {
+                try armadaToken.mintFromGameplay(player, REFEREE_ARMADA_REWARD, "referral_signup") {
+                    emit ArmadaTokenMinted(player, REFEREE_ARMADA_REWARD, "referral_signup");
+                } catch {}
+            }
+
+            // Reward referrer with ARMADA and Diamond
+            accounts[referrer].diamonds += REFERRER_DIAMOND_REWARD;
+            referralData[referrer].referralRewards += REFERRER_ARMADA_REWARD;
+
+            if (address(armadaToken) != address(0)) {
+                try armadaToken.mintFromGameplay(referrer, REFERRER_ARMADA_REWARD, "referral_bonus") {
+                    emit ArmadaTokenMinted(referrer, REFERRER_ARMADA_REWARD, "referral_bonus");
+                } catch {}
+            }
+
+            emit ReferralUsed(referrer, player, _referralCode);
+        }
+
+        // Give starting XP in battle pass
         if (address(battlePassContract) != address(0)) {
-            try battlePassContract.gainExperience(msg.sender, 5, "account_created") {} catch {}
-            emit BattlePassXPGained(msg.sender, 5, "account_created");
+            try battlePassContract.gainExperience(player, 5, "account_created") {} catch {}
+            emit BattlePassXPGained(player, 5, "account_created");
         }
     }
 
@@ -765,6 +888,37 @@ contract MantleArmada is Ownable, ReentrancyGuard {
     function getPlayerBattlePower(address player) external view returns (uint256) {
         Account storage a = accounts[player];
         return a.attack + a.defense + a.speed;
+    }
+
+    /**
+     * @dev NEW: Get player's referral code
+     */
+    function getPlayerReferralCode(address player) external view returns (string memory) {
+        return playerReferralCode[player];
+    }
+
+    /**
+     * @dev NEW: Get referral statistics for a player
+     */
+    function getReferralStats(address player) external view returns (
+        string memory referralCode,
+        address referrer,
+        uint256 totalReferrals,
+        uint256 referralRewards
+    ) {
+        return (
+            playerReferralCode[player],
+            referralData[player].referrer,
+            referralData[player].totalReferrals,
+            referralData[player].referralRewards
+        );
+    }
+
+    /**
+     * @dev NEW: Validate if a referral code exists
+     */
+    function isValidReferralCode(string calldata code) external view returns (bool) {
+        return referralCodes[code] != address(0);
     }
 }
 

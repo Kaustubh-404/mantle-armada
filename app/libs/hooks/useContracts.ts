@@ -247,17 +247,25 @@ export function useUnclaimedRewards() {
 export function useTopGuilds(count: number = 10) {
   const { guildContract } = useContractInstances();
 
-  const { data, isLoading, refetch } = useReadContract({
+  // Get total guild count first
+  const { data: nextGuildIdData } = useReadContract({
     contract: guildContract,
-    method: 'function getTopGuilds(uint256) view returns (uint256[], uint256[])',
-    params: [BigInt(count)],
+    method: 'function nextGuildId() view returns (uint256)',
+    params: [],
   });
 
+  const totalGuilds = nextGuildIdData ? Number(nextGuildIdData) - 1 : 0;
+
+  // Generate array of all guild IDs (1 to totalGuilds)
+  const allGuildIds = totalGuilds > 0
+    ? Array.from({ length: totalGuilds }, (_, i) => BigInt(i + 1))
+    : [];
+
   return {
-    guildIds: data?.[0] || [],
-    scores: data?.[1] || [],
-    isLoading,
-    refetch,
+    guildIds: allGuildIds,
+    scores: allGuildIds.map(() => BigInt(0)), // Placeholder scores
+    isLoading: false,
+    refetch: () => {},
   };
 }
 

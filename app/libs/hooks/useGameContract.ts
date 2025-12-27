@@ -28,7 +28,12 @@ const MANTLE_ARMADA_ABI = [
   "function isPort(uint256 location) view returns (bool)",
   "function getShipsAt(uint256 loc) view returns (address[], string[], uint256[])",
   "function getRanking(uint256 n) view returns (address[], uint256[])",
-  "function players(uint256) view returns (address)"
+  "function players(uint256) view returns (address)",
+  // Referral System
+  "function createAccountWithReferral(string _boatName, bool _isPirate, uint256 _startLocation, string _referralCode)",
+  "function getPlayerReferralCode(address player) view returns (string)",
+  "function getReferralStats(address player) view returns (string referralCode, address referrer, uint256 totalReferrals, uint256 referralRewards)",
+  "function isValidReferralCode(string code) view returns (bool)"
 ] as const;
 
 /**
@@ -65,6 +70,15 @@ export function useGameContract() {
       contract,
       method: "function createAccount(string _boatName, bool _isPirate, uint256 _startLocation)",
       params: [boatName, isPirate, BigInt(startLocation)],
+    });
+    return await sendTransaction({ transaction, account });
+  };
+
+  const createAccountWithReferral = async (boatName: string, isPirate: boolean, startLocation: number, referralCode: string) => {
+    const transaction = prepareContractCall({
+      contract,
+      method: "function createAccountWithReferral(string _boatName, bool _isPirate, uint256 _startLocation, string _referralCode)",
+      params: [boatName, isPirate, BigInt(startLocation), referralCode],
     });
     return await sendTransaction({ transaction, account });
   };
@@ -319,14 +333,42 @@ export function useGameContract() {
     return crew * 25 + 5 * streak;
   };
 
+  // Referral System
+  const getPlayerReferralCode = async (playerAddress?: string) => {
+    const address = playerAddress || account.address;
+    return await readContract({
+      contract,
+      method: "function getPlayerReferralCode(address player) view returns (string)",
+      params: [address],
+    });
+  };
+
+  const getReferralStats = async (playerAddress?: string) => {
+    const address = playerAddress || account.address;
+    return await readContract({
+      contract,
+      method: "function getReferralStats(address player) view returns (string referralCode, address referrer, uint256 totalReferrals, uint256 referralRewards)",
+      params: [address],
+    });
+  };
+
+  const isValidReferralCode = async (code: string) => {
+    return await readContract({
+      contract,
+      method: "function isValidReferralCode(string code) view returns (bool)",
+      params: [code],
+    });
+  };
+
   return {
     ...contractData,
     isReady: true,
     playerAddress: account.address,
-    
+
     // Account Management
     getPlayerAccount,
     createAccount,
+    createAccountWithReferral,
     
     // Game Actions
     dailyCheckIn,
@@ -367,5 +409,10 @@ export function useGameContract() {
     isAtPort,
     calculateTravelTime,
     calculateDailyReward,
+
+    // Referral System
+    getPlayerReferralCode,
+    getReferralStats,
+    isValidReferralCode,
   };
 } 

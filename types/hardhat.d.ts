@@ -86,10 +86,6 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ArmadaToken__factory>;
     getContractFactory(
-      name: "SeasOfLinkardia",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.SeasOfLinkardia__factory>;
-    getContractFactory(
       name: "BattlePass",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.BattlePass__factory>;
@@ -865,11 +861,6 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.ArmadaToken>;
     getContractAt(
-      name: "SeasOfLinkardia",
-      address: string | ethers.Addressable,
-      signer?: ethers.Signer
-    ): Promise<Contracts.SeasOfLinkardia>;
-    getContractAt(
       name: "BattlePass",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -1798,10 +1789,6 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ArmadaToken>;
     deployContract(
-      name: "SeasOfLinkardia",
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.SeasOfLinkardia>;
-    deployContract(
       name: "BattlePass",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.BattlePass>;
@@ -2576,11 +2563,6 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ArmadaToken>;
-    deployContract(
-      name: "SeasOfLinkardia",
-      args: any[],
-      signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.SeasOfLinkardia>;
     deployContract(
       name: "BattlePass",
       args: any[],
