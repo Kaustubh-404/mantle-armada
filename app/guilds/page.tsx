@@ -47,10 +47,10 @@ export default function GuildsPage() {
     });
   }, [playerAccount]);
 
-  // Get selected guild data
+  // Get selected guild data - Use public mapping directly instead of getGuild
   const { data: selectedGuildData } = useReadContract({
     contract: guildContract,
-    method: 'function getGuild(uint256) view returns (tuple(string name, address leader, uint256 createdAt, uint256 memberCount, uint256 treasury, bool isActive, uint256 totalBattlesWon, string logo, uint256 level))',
+    method: 'function guilds(uint256) view returns (string name, address leader, uint256 createdAt, uint256 memberCount, uint256 treasury, bool isActive, uint256 totalBattlesWon, string logo, uint256 level)',
     params: selectedGuildId ? [selectedGuildId] : undefined,
   });
 
@@ -412,9 +412,10 @@ function GuildCard({
 }) {
   const { guildContract } = useContractInstances();
 
+  // Use public mapping directly instead of getGuild (same as usePlayerGuild hook)
   const { data: guildData } = useReadContract({
     contract: guildContract,
-    method: 'function getGuild(uint256) view returns (tuple(string name, address leader, uint256 createdAt, uint256 memberCount, uint256 treasury, bool isActive, uint256 totalBattlesWon, string logo, uint256 level))',
+    method: 'function guilds(uint256) view returns (string name, address leader, uint256 createdAt, uint256 memberCount, uint256 treasury, bool isActive, uint256 totalBattlesWon, string logo, uint256 level)',
     params: [guildId],
   });
 
